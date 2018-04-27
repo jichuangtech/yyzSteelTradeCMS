@@ -21,15 +21,15 @@ const links = [{
   href: '',
 }];
 
-const copyright = <div> <Icon type="copyright" /> 2018 金凤针织</div>;
+const copyright = <div> <Icon type="copyright" /> 2018 合肥友友志</div>;
 
 class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = '金凤针织后台管理系统';
+    let title = '合肥友友志钢贸CMS';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 金凤针织后台管理系统`;
+      title = `${routerData[pathname].name} - 合肥友友志钢贸CMS`;
     }
     return title;
   }
@@ -43,7 +43,7 @@ class UserLayout extends React.PureComponent {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>金凤针织后台管理系统</span>
+                  <span className={styles.title}>合肥友友志钢贸CMS</span>
                 </Link>
               </div>
               <div className={styles.desc}></div>

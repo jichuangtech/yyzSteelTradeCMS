@@ -84,6 +84,16 @@ export async function queryGoods() {
   return request(url);
 }
 
+export async function queryFactory() {
+  const url = `${Urls.FACTORY_URL}`;
+  return request(url);
+}
+
+export async function querySpecification() {
+  const url = `${Urls.SPECIFICATION_URL}`;
+  return request(url);
+}
+
 export async function queryGoodsByCategoryId(categoryId) {
   const url = `${Urls.GOODS_CATEGORIES_URL}/${categoryId}/goods`;
   return request(url);
@@ -91,6 +101,14 @@ export async function queryGoodsByCategoryId(categoryId) {
 
 export async function addGoods(params) {
   const url = `${Urls.GOODS_URL}`;
+  return request(url, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function saveStock(params) {
+  const url = `${Urls.STOCK_URL}`;
   return request(url, {
     method: 'POST',
     body: params,

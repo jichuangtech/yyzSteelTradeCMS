@@ -112,9 +112,28 @@ export const getRouterData = (app) => {
     '/list/goods-query': {
       component: dynamicWrapper(app, ['goods', 'list'], () => import('../routes/Goods/QueryView')),
     },
+    '/specification/query': {
+      component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
+    },
+
+    '/specification/add': {
+      component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
+    },
+
+    '/list/specification': {
+      component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
+    },
     '/list/goods-add': {
       component: dynamicWrapper(app, ['goods', 'list'], () => import('../routes/Forms/GoodsForm')),
     },
+
+    '/factory/contract-query': {
+      component: dynamicWrapper(app, ['factory'], () => import('../routes/Forms/GoodsForm')),
+    },
+    '/factory/contract-add': {
+      component: dynamicWrapper(app, ['factory', 'stock'], () => import('../routes/factory/ContractAddForm')),
+    },
+
     '/list/card-list': {
       component: dynamicWrapper(app, ['list'], () => import('../routes/List/CardList')),
     },

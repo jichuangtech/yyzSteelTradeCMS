@@ -92,9 +92,9 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = '金凤针织后台管理系统';
+    let title = '合肥友友志钢贸CMS';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 金凤针织后台管理系统`;
+      title = `${routerData[pathname].name} - 合肥友友志钢贸CMS`;
     }
     return title;
   }
@@ -109,7 +109,7 @@ class BasicLayout extends React.PureComponent {
       urlParams.searchParams.delete('redirect');
       window.history.replaceState(null, 'redirect', urlParams.href);
     } else {
-      return '/list/table-list';
+      return '/specification/query';
       // return '/dashboard/analysis';
     }
     return redirect;
@@ -225,7 +225,7 @@ class BasicLayout extends React.PureComponent {
             // }]}
             copyright={
               <div>
-                <Icon type="copyright" /> 金凤针织
+                <Icon type="copyright" /> 合肥友友志钢贸CMS
               </div>
             }
           />

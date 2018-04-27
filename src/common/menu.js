@@ -1,10 +1,35 @@
 import { isUrl } from '../utils/utils';
 
 const menuData = [{
+  name: '规格管理',
+  icon: 'table',
+  path: 'specification',
+  children: [{
+    name: '规格查询',
+    path: 'query',
+  }, {
+    name: '规格添加',
+    path: 'add',
+  }],
+}, {
+  name: '工厂管理',
+  icon: 'table',
+  path: 'factory',
+  children: [{
+    name: '合同查询',
+    path: 'contract-query',
+  }, {
+    name: '合同新增',
+    path: 'contract-add',
+  }],
+}, {
   name: '商品管理',
   icon: 'table',
   path: 'list',
   children: [{
+    name: '规格查询',
+    path: 'specification',
+  }, {
     name: '商品分类',
     path: 'table-list',
   }, {
