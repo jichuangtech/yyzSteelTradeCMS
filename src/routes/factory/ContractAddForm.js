@@ -40,7 +40,6 @@ export default class ContractAddForm extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'factory/queryFactory',
-      // type: 'rule/fetch',
     });
   }
 
@@ -128,10 +127,9 @@ export default class ContractAddForm extends PureComponent {
 
   getFactoryRadio(factoryJson) {
     const FactoryRadio = [];
-    for (const index in factoryJson) {
+    for(const index in factoryJson) {
       const factory = factoryJson[index];
-      console.info(" getFactoryRadio index: " + index + ", id: " + factory.id + ", name: " + factory.name);
-      const radio = (<Radio key={factory.id} value={factory.id}>{factory.name}</Radio>);
+      const radio = (<Radio key={factory.id} value={factory.id + ""}>{factory.name}</Radio>);
       FactoryRadio.push(radio);
     }
     return FactoryRadio;
@@ -199,7 +197,7 @@ export default class ContractAddForm extends PureComponent {
 
             <FormItem
               {...formItemLayout}
-              label="基价"
+              label="基价(元)"
             >
               {getFieldDecorator('price', {
                 rules: [{
