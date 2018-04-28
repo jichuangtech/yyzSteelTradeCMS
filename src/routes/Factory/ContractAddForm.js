@@ -120,19 +120,20 @@ export default class ContractAddForm extends PureComponent {
     // goodsVO.categoryId = this.state.categoryId;
     stockVo.price = values.price;
     stockVo.number = values.number;
+    stockVo.rest = values.number;
     stockVo.offset = 10;
     stockVo.factoryId = values.factoryId;
     return stockVo;
   }
 
   getFactoryRadio(factoryJson) {
-    const FactoryRadio = [];
+    const factoryRadio = [];
     for(const index in factoryJson) {
       const factory = factoryJson[index];
       const radio = (<Radio key={factory.id} value={factory.id + ""}>{factory.name}</Radio>);
-      FactoryRadio.push(radio);
+      factoryRadio.push(radio);
     }
-    return FactoryRadio;
+    return factoryRadio;
   }
 
   render() {

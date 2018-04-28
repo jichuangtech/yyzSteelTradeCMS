@@ -23,6 +23,17 @@ const menuData = [{
     path: 'contract-add',
   }],
 }, {
+  name: '客户管理',
+  icon: 'table',
+  path: 'customer',
+  children: [{
+    name: '订单查询',
+    path: 'order-query',
+  }, {
+    name: '客户下单',
+    path: 'order-add',
+  }],
+}, {
   name: '商品管理',
   icon: 'table',
   path: 'list',

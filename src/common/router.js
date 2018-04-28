@@ -112,14 +112,6 @@ export const getRouterData = (app) => {
     '/list/goods-query': {
       component: dynamicWrapper(app, ['goods', 'list'], () => import('../routes/Goods/QueryView')),
     },
-    '/specification/query': {
-      component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
-    },
-
-    '/specification/add': {
-      component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
-    },
-
     '/list/specification': {
       component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
     },
@@ -127,11 +119,27 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['goods', 'list'], () => import('../routes/Forms/GoodsForm')),
     },
 
+
+    '/customer/order-query': {
+      component: dynamicWrapper(app, ['factory', 'stock'], () => import('../routes/Stock/ContractQueryView')),
+    },
+    '/customer/order-add': {
+      component: dynamicWrapper(app, ['factory', 'stock', 'orderSelectInfo'], () => import('../routes/Customer/OrderAddView')),
+    },
+
     '/factory/contract-query': {
-      component: dynamicWrapper(app, ['factory'], () => import('../routes/Forms/GoodsForm')),
+      component: dynamicWrapper(app, ['factory', 'stock'], () => import('../routes/Stock/ContractQueryView')),
     },
     '/factory/contract-add': {
-      component: dynamicWrapper(app, ['factory', 'stock'], () => import('../routes/factory/ContractAddForm')),
+      component: dynamicWrapper(app, ['factory', 'stock'], () => import('../routes/Factory/ContractAddForm')),
+    },
+
+    '/specification/query': {
+      component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
+    },
+
+    '/specification/add': {
+      component: dynamicWrapper(app, ['specification', 'factory'], () => import('../routes/Specification/QueryView')),
     },
 
     '/list/card-list': {

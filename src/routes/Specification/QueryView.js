@@ -41,7 +41,7 @@ class QueryView extends Component {
   queryGoodsById(categoryId) {
     const { dispatch } = this.props;
     dispatch({
-      type: 'factory/queryFactory',
+      type: 'Factory/queryFactory',
       // type: 'specification/querySpec',
     });
   }
@@ -61,7 +61,7 @@ class QueryView extends Component {
             factoryTitle={factory.name}
             selectedRows={selectedRows}
             loading={loading}
-            list={factory.sepcList}
+            list={factory.specList}
         />);
       specViews.push(specView);
     }

@@ -1,4 +1,4 @@
-import { queryFactory, saveStock} from '../services/api';
+import { queryFactory, saveStock, queryStockByFactoryId } from '../services/api';
 import { message } from 'antd';
 import { routerRedux } from 'dva/router';
 
@@ -13,8 +13,8 @@ export default {
   },
 
   effects: {
-    *queryStock({ payload }, { call, put }) {
-      const response = yield call(queryFactory);
+    *queryStockByFactory({ payload }, { call, put }) {
+      const response = yield call(queryStockByFactoryId, payload.factoryId);
       yield put({
         type: 'save',
         payload: response.data,

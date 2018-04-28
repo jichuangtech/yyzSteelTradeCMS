@@ -89,6 +89,11 @@ export async function queryFactory() {
   return request(url);
 }
 
+export async function queryFactoryById(factoryId) {
+  const url = `${Urls.FACTORY_URL}/${factoryId}`;
+  return request(url);
+}
+
 export async function querySpecification() {
   const url = `${Urls.SPECIFICATION_URL}`;
   return request(url);
@@ -96,6 +101,11 @@ export async function querySpecification() {
 
 export async function queryGoodsByCategoryId(categoryId) {
   const url = `${Urls.GOODS_CATEGORIES_URL}/${categoryId}/goods`;
+  return request(url);
+}
+
+export async function queryStockByFactoryId(factoryId) {
+  const url = `${Urls.STOCK_URL}/withFactoryId/${factoryId}`;
   return request(url);
 }
 
