@@ -1,22 +1,40 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'dva';
+import React, {PureComponent} from 'react';
+import {connect} from 'dva';
 import {
-  Steps, Checkbox, Form, Input, DatePicker, message, Upload, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
+  Modal,
+  Steps,
+  Checkbox,
+  Form,
+  Input,
+  DatePicker,
+  message,
+  Upload,
+  Select,
+  Button,
+  Card,
+  InputNumber,
+  Radio,
+  Icon,
+  Tooltip,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import FactorySelectView from '../../components/Factory/FactorySelectView';
 import styles from './style.less';
 import orderAddStyle from './orderAddStyle.less';
 import SpecificationSelectView2 from '../../components/Specificaion/SpecificationSelectView2';
+import StockSelectView2 from '../../components/Stock/StockSelectView2';
+import OrderAddTable from '../../components/Customer/OrderAddTable';
+import CarSelect from '../../components/Car/CarSelect';
+import CustomerSelect from '../../components/Customer/CustomerSelect';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
+const {Option} = Select;
+const {RangePicker} = DatePicker;
+const {TextArea} = Input;
 const CheckboxGroup = Checkbox.Group;
 const Step = Steps.Step;
 
-@connect(({ factory }) => ({ factory }))
+@connect(({factory}) => ({factory}))
 @Form.create()
 export default class OrderAddView extends PureComponent {
   constructor(props) {
@@ -33,6 +51,7 @@ export default class OrderAddView extends PureComponent {
       image: [],
       current: 0,
       factoryId: 1,
+      speContractSelectModalVisible: false,
     };
 
     // 成员变量的定义
@@ -42,35 +61,39 @@ export default class OrderAddView extends PureComponent {
     };
 
     this.steps = [{
-      title: '工厂',
-      content: (<div style={{ backgroundColor: '#f00' }}>{this.state.factoryId}</div>),
-    }, {
       title: '合同',
       content: 'Second-content',
     }, {
       title: '规格',
       content: 'Second-content',
-    }, {
-      title: '件数',
-      content: 'Last-content',
     }];
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     dispatch({
       type: 'factory/queryFactory',
     });
     this.refreshOrderSelectInfo(this.state.factoryId);
+    // this.refreshCarInfo();
+    // this.refreshCustomerInfo();
   }
 
   refreshOrderSelectInfo(factoryId) {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     dispatch({
       type: 'orderSelectInfo/refreshSelectInfo',
       payload: {
         factoryId: factoryId,
       },
+    });
+
+    dispatch({
+      type: 'orderSelectInfo/refreshCarInfo',
+    });
+
+    dispatch({
+      type: 'orderSelectInfo/refreshCustomerInfo',
     });
   }
 
@@ -131,7 +154,7 @@ export default class OrderAddView extends PureComponent {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { getFieldProps, getFieldValue } = this.props.form;
+    const {getFieldProps, getFieldValue} = this.props.form;
     // const value = this.refs.test.refs.input.value;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -169,16 +192,31 @@ export default class OrderAddView extends PureComponent {
 
   prev() {
     const current = this.state.current - 1;
-    this.setState({ current });
+    this.setState({current});
   }
 
   next() {
     const current = this.state.current + 1;
-    this.setState({ current });
+    this.setState({current});
   }
 
   getVisibleStyle(currCurrent) {
     return this.state.current === currCurrent ? orderAddStyle.stepShow : orderAddStyle.stepHidden;
+  }
+
+  handleOk = (e) => {
+    console.log(e);
+    this.setState({
+      current: 0,
+      speContractSelectModalVisible: false,
+    });
+  }
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      current: 0,
+      speContractSelectModalVisible: false,
+    });
   }
 
   render() {
@@ -192,87 +230,135 @@ export default class OrderAddView extends PureComponent {
           message.error('请上传JPG/PNG的图片!');
           return false;
         }
-        this.setState(({ image }) => ({
+        this.setState(({image}) => ({
           image: [file],
         }));
         return false;
       },
       fileList: this.state.image,
     };
-    const { submitting, factory: { list } } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const {submitting, factory: {list, carList}} = this.props;
+    const {getFieldDecorator, getFieldValue} = this.props.form;
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 },
+        xs: {span: 24},
+        sm: {span: 7},
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
+        xs: {span: 24},
+        sm: {span: 12},
+        md: {span: 10},
       },
     };
 
     const submitFormLayout = {
       wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
+        xs: {span: 24, offset: 0},
+        sm: {span: 10, offset: 7},
       },
     };
-    const { current } = this.state;
+    const {current} = this.state;
     const steps = this.steps;
+    const that = this;
     return (
-      <PageHeaderLayout title="钢铁下单" content="">
-        <Card bordered={false}>
-          <div>
-            <Steps current={current}>
-              {steps.map(item => <Step key={item.title} title={item.title} />)}
-            </Steps>
+      <Card bordered={true} style={{borderRadius: 25, borderColor: '#96D7FB', backgroundColor: "#E7F7FF"}}>
+        <div>
 
-            <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(0)}`}>
-              <FactorySelectView
-                onChange={(value) => {
-                  console.info(` factory id: ${value}`);
-                  this.setState({
-                    factoryId: value,
-                  });
-                  this.refreshOrderSelectInfo(value);
-                }}
-                factoryList={list}
+          <div className={orderAddStyle.orderCorporation}>
+            合肥友友志钢铁科技公司
+          </div>
+
+          <div className={orderAddStyle.firstRow}>
+            <div className={orderAddStyle.customer}>
+              客户：
+              <CustomerSelect
+                placeholder="请选择客户"
               />
             </div>
 
-            <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(1)}`}>2</div>
-
-            <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(2)}`}>
-              <SpecificationSelectView2 />
+            <div className={orderAddStyle.orderTitle}>
+              产品销售订货单
             </div>
-            <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(3)}`}>4</div>
+
+            <div className={orderAddStyle.car}>
+              车号：
+              <CarSelect
+                placeholder="请选择客户"
+             />
+            </div>
+          </div>
+
+
+          <div className={orderAddStyle.factory}>
+            工厂：
+            <FactorySelectView
+              onChange={(value) => {
+                that.setState({
+                  factoryId: value,
+                });
+                that.refreshOrderSelectInfo(value);
+              }}
+              factoryList={list}
+            />
+          </div>
+
+          <div className={orderAddStyle.contract}>
+            合同/规格：
+            <a ref="javascript:void(0)"
+               style={{textDecoration: "underline"}}
+               onClick={() => {
+                 this.setState({
+                   speContractSelectModalVisible: true,
+                 })
+               }}>点击选择</a>
+          </div>
+          <OrderAddTable/>
+
+          <Modal
+            title="请选择'合同' 与 '规格'"
+            visible={this.state.speContractSelectModalVisible}
+            onOk={that.handleOk}
+            onCancel={that.handleCancel}
+          >
+            <Steps current={current}>
+              {steps.map(item => <Step key={item.title} title={item.title}/>)}
+            </Steps>
+
+            <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(0)}`}>
+              <StockSelectView2/>
+            </div>
+
+            <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(1)}`}>
+              <SpecificationSelectView2/>
+            </div>
             <div className={orderAddStyle.stepsAction}>
               {
                 this.state.current > 0
                 &&
                 (
-                <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
-                  上一步
-                </Button>
-)
+                  <Button style={{marginLeft: 8}} onClick={() => this.prev()}>
+                    上一步
+                  </Button>
+                )
               }
 
               {
                 this.state.current < steps.length - 1
                 &&
-                <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.next()}>下一步</Button>
+                <Button style={{marginLeft: 8}} type="primary" onClick={() => this.next()}>下一步</Button>
               }
               {
                 this.state.current === steps.length - 1
                 &&
-                <Button style={{ marginLeft: 8 }} type="primary" onClick={() => message.success('Processing complete!')}>完成</Button>
+                <Button style={{marginLeft: 8}} type="primary" onClick={() => message.success('Processing complete!')}>完成</Button>
               }
             </div>
-          </div>
-        </Card>
-      </PageHeaderLayout>
-    );
+          </Modal>
+
+
+        </div>
+      </Card>
+    )
+      ;
   }
 }

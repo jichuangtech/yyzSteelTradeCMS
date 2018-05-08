@@ -1,7 +1,10 @@
-import { queryFactoryById } from '../services/api';
-import { message } from 'antd';
-import { routerRedux } from 'dva/router';
+import {queryFactoryById, queryCar, queryCustomer} from '../services/api';
+import {message} from 'antd';
+import {routerRedux} from 'dva/router';
 
+/**
+ *
+ */
 export default {
   namespace: 'orderSelectInfo',
 
@@ -13,10 +16,14 @@ export default {
     contractList: [],
     specificationList: [],
     factoryName: "",
+    carId: -1,
+    carList: [],
+    customerId: -1,
+    customerLis: [],
   },
 
   effects: {
-    *refreshSelectInfo({ payload }, { call, put }) {
+    *refreshSelectInfo({payload}, {call, put}) {
       const response = yield call(queryFactoryById, payload.factoryId);
       // alert("refreshSelectInfo response: " + JSON.stringify(response));
       yield put({
@@ -24,6 +31,23 @@ export default {
         payload: response.data,
       });
     },
+
+    *refreshCarInfo({payload}, {call, put}) {
+      const response = yield call(queryCar);
+      yield put({
+        type: 'saveCar',
+        payload: response.data,
+      });
+    },
+
+    *refreshCustomerInfo({payload}, {call, put}) {
+      const response = yield call(queryCustomer);
+      yield put({
+        type: 'saveCustomer',
+        payload: response.data,
+      });
+    },
+
   },
 
   reducers: {
@@ -35,6 +59,32 @@ export default {
         contractList: action.payload.stockList,
         specificationList: action.payload.specList,
         factoryName: action.payload.name,
+      };
+    },
+
+    saveCar(state, action) {
+      let defId = -1;
+      if (action.payload != null && action.payload.length > 0) {
+        defId = action.payload[0].id;
+      }
+      return {
+        ...state,
+        carList: action.payload,
+        carId: defId,
+        loading: false,
+      };
+    },
+
+    saveCustomer(state, action) {
+      let defId = -1;
+      if (action.payload != null && action.payload.length > 0) {
+        defId = action.payload[0].id;
+      }
+      return {
+        ...state,
+        customerLis: action.payload,
+        customerId: defId,
+        loading: false,
       };
     },
 

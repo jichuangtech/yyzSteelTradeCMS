@@ -89,6 +89,16 @@ export async function queryFactory() {
   return request(url);
 }
 
+export async function queryCar() {
+  const url = `${Urls.CAR_URL}`;
+  return request(url);
+}
+
+export async function queryCustomer() {
+  const url = `${Urls.CUSTOMER_URL}`;
+  return request(url);
+}
+
 export async function queryFactoryById(factoryId) {
   const url = `${Urls.FACTORY_URL}/${factoryId}`;
   return request(url);

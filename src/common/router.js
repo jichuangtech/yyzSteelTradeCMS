@@ -124,7 +124,7 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['factory', 'stock'], () => import('../routes/Stock/ContractQueryView')),
     },
     '/customer/order-add': {
-      component: dynamicWrapper(app, ['factory', 'stock', 'orderSelectInfo'], () => import('../routes/Customer/OrderAddView')),
+      component: dynamicWrapper(app, ['factory', 'stock', 'orderSelectInfo',], () => import('../routes/Customer/OrderAddView')),
     },
 
     '/factory/contract-query': {

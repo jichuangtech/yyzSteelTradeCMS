@@ -18,11 +18,13 @@ const REGISTER_ERROR = 'register_error'
 const PIC = 'https://www.jichuangtech.site/clothshopserver/api/info/picture/'
 
 const FACTORY_URL = PRE_FIX3 + '/api/factory';
+const CAR_URL = PRE_FIX3 + '/api/car';
+const CUSTOMER_URL = PRE_FIX3 + '/api/customer';
 const SPECIFICATION_URL = PRE_FIX3 + '/api/specification';
 const STOCK_URL = PRE_FIX3 + '/api/stock';
 
 export {PRE_FIX, PIC,
   COLOR_URL,
   REGISTER_SUCCESS, REGISTER_FAIL, REGISTER_ERROR, GOODS_URL, GOODS_CATEGORIES_URL, LOGIN_URL, ROUTER_PREFIX
-  , INFO_GOODS_URL, INFO_GOODS_CATEGORIES_URL, FACTORY_URL, SPECIFICATION_URL, STOCK_URL,
+  , INFO_GOODS_URL, INFO_GOODS_CATEGORIES_URL, FACTORY_URL, SPECIFICATION_URL, STOCK_URL, CAR_URL, CUSTOMER_URL
 };
