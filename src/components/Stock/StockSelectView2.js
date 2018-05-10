@@ -7,16 +7,16 @@ import StockStandardTable from '../../components/StandardTable/stock';
 class StockSelectView extends Component {
 
   render() {
-    const { orderSelectInfo:  { contractList, factoryName, loading } } = this.props;
+    const { orderSelectInfo:  { contractList, factoryName, loading }, onSelectRow, selectContractList } = this.props;
     return (
       <div>
-        <span>{factoryName}</span>
         <StockStandardTable
+          selectContractList={ selectContractList }
           selectedRows={[]}
           loading={loading}
           data={contractList}
-          onSelectRow={() => {}}
-          onChange={() => {}}
+          onSelectRow={onSelectRow}
+          onChange={() => { alert( " table change " ) }}
           onDelClick={() => {}}
         />
       </div>);

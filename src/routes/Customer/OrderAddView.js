@@ -1,5 +1,5 @@
-import React, {PureComponent} from 'react';
-import {connect} from 'dva';
+import React, { PureComponent } from 'react';
+import { connect } from 'dva';
 import {
   Modal,
   Steps,
@@ -28,13 +28,13 @@ import CarSelect from '../../components/Car/CarSelect';
 import CustomerSelect from '../../components/Customer/CustomerSelect';
 
 const FormItem = Form.Item;
-const {Option} = Select;
-const {RangePicker} = DatePicker;
-const {TextArea} = Input;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 const CheckboxGroup = Checkbox.Group;
 const Step = Steps.Step;
 
-@connect(({factory}) => ({factory}))
+@connect(({ factory, orderSelectInfo }) => ({ factory, orderSelectInfo }))
 @Form.create()
 export default class OrderAddView extends PureComponent {
   constructor(props) {
@@ -52,6 +52,9 @@ export default class OrderAddView extends PureComponent {
       current: 0,
       factoryId: 1,
       speContractSelectModalVisible: false,
+      selectContractList: [],
+      selectSpeList: [],
+      preOrderList:[],
     };
 
     // 成员变量的定义
@@ -70,7 +73,7 @@ export default class OrderAddView extends PureComponent {
   }
 
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'factory/queryFactory',
     });
@@ -80,11 +83,11 @@ export default class OrderAddView extends PureComponent {
   }
 
   refreshOrderSelectInfo(factoryId) {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'orderSelectInfo/refreshSelectInfo',
       payload: {
-        factoryId: factoryId,
+        factoryId,
       },
     });
 
@@ -154,7 +157,7 @@ export default class OrderAddView extends PureComponent {
 
   handleSubmit(e) {
     e.preventDefault();
-    const {getFieldProps, getFieldValue} = this.props.form;
+    const { getFieldProps, getFieldValue } = this.props.form;
     // const value = this.refs.test.refs.input.value;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -192,16 +195,24 @@ export default class OrderAddView extends PureComponent {
 
   prev() {
     const current = this.state.current - 1;
-    this.setState({current});
+    this.setState({ current });
   }
 
   next() {
     const current = this.state.current + 1;
-    this.setState({current});
+    this.setState({ current });
   }
 
   getVisibleStyle(currCurrent) {
     return this.state.current === currCurrent ? orderAddStyle.stepShow : orderAddStyle.stepHidden;
+  }
+
+  onOrderGoodsDelete(index, orderGoods) {
+    const prevOrderList = this.state.preOrderList;
+    //todo  第一个参数： start， 第二个参数： deleteCount
+    prevOrderList.splice(index, 1);
+
+    this.setState({ prevOrderList });
   }
 
   handleOk = (e) => {
@@ -219,6 +230,25 @@ export default class OrderAddView extends PureComponent {
     });
   }
 
+  createOrder() {
+    const selectedContract = this.state.selectContractList[0];
+    const selectedSpecList = this.state.selectSpeList;
+    const orders = this.state.preOrderList;
+    for (const index in selectedSpecList) {
+      const spec = selectedSpecList[index];
+      const order = {
+        key: index,
+        goodsName: '螺纹钢',
+        specStr: `${spec.diameter}|${spec.length}`,
+        number: 0,
+        contractName: selectedContract.contractNo,
+      };
+
+      orders.push(order);
+    }
+    return orders;
+  }
+
   render() {
     const props = {
       beforeUpload: (file) => {
@@ -230,38 +260,38 @@ export default class OrderAddView extends PureComponent {
           message.error('请上传JPG/PNG的图片!');
           return false;
         }
-        this.setState(({image}) => ({
+        this.setState(({ image }) => ({
           image: [file],
         }));
         return false;
       },
       fileList: this.state.image,
     };
-    const {submitting, factory: {list, carList}} = this.props;
-    const {getFieldDecorator, getFieldValue} = this.props.form;
+    const { submitting, factory: { list, carList }, orderSelectInfo: { factoryName } } = this.props;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
     const formItemLayout = {
       labelCol: {
-        xs: {span: 24},
-        sm: {span: 7},
+        xs: { span: 24 },
+        sm: { span: 7 },
       },
       wrapperCol: {
-        xs: {span: 24},
-        sm: {span: 12},
-        md: {span: 10},
+        xs: { span: 24 },
+        sm: { span: 12 },
+        md: { span: 10 },
       },
     };
 
     const submitFormLayout = {
       wrapperCol: {
-        xs: {span: 24, offset: 0},
-        sm: {span: 10, offset: 7},
+        xs: { span: 24, offset: 0 },
+        sm: { span: 10, offset: 7 },
       },
     };
-    const {current} = this.state;
+    const { current, preOrderList } = this.state;
     const steps = this.steps;
     const that = this;
     return (
-      <Card bordered={true} style={{borderRadius: 25, borderColor: '#96D7FB', backgroundColor: "#E7F7FF"}}>
+      <Card bordered style={{ borderRadius: 25, borderColor: '#96D7FB', backgroundColor: '#E7F7FF' }}>
         <div>
 
           <div className={orderAddStyle.orderCorporation}>
@@ -284,7 +314,7 @@ export default class OrderAddView extends PureComponent {
               车号：
               <CarSelect
                 placeholder="请选择客户"
-             />
+              />
             </div>
           </div>
 
@@ -304,39 +334,66 @@ export default class OrderAddView extends PureComponent {
 
           <div className={orderAddStyle.contract}>
             合同/规格：
-            <a ref="javascript:void(0)"
-               style={{textDecoration: "underline"}}
-               onClick={() => {
-                 this.setState({
-                   speContractSelectModalVisible: true,
-                 })
-               }}>点击选择</a>
+            <Button
+              type="primary"
+              shape="circle"
+              icon="search"
+              onClick={
+                      () => {
+                        this.setState({
+                          speContractSelectModalVisible: true,
+                          selectContractList: [],
+                          selectSpeList: [],
+                        });
+                      }
+
+                    }
+            />
           </div>
-          <OrderAddTable/>
+          <OrderAddTable
+            preOrderList={preOrderList}
+            onOrderGoodsDelete={(index, orderGoods) => this.onOrderGoodsDelete(index, orderGoods)}
+          />
 
           <Modal
-            title="请选择'合同' 与 '规格'"
+            title={`请选择【${factoryName}】的【合同】与【规格】`}
             visible={this.state.speContractSelectModalVisible}
             onOk={that.handleOk}
             onCancel={that.handleCancel}
           >
             <Steps current={current}>
-              {steps.map(item => <Step key={item.title} title={item.title}/>)}
+              {steps.map(item => <Step key={item.title} title={item.title} />)}
             </Steps>
 
             <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(0)}`}>
-              <StockSelectView2/>
+              <StockSelectView2
+                selectContractList={this.state.selectContractList}
+                onSelectRow={(data) => {
+                  this.setState({
+                    selectContractList: data,
+                  });
+                }}
+              />
             </div>
 
+
             <div className={`${orderAddStyle.stepsContent} ${this.getVisibleStyle(1)}`}>
-              <SpecificationSelectView2/>
+              <SpecificationSelectView2
+                selectSpeList={this.state.selectSpeList}
+                onSelectRow={(data) => {
+                  this.setState({
+                    selectSpeList: data,
+                  });
+                }}
+
+              />
             </div>
             <div className={orderAddStyle.stepsAction}>
               {
                 this.state.current > 0
                 &&
                 (
-                  <Button style={{marginLeft: 8}} onClick={() => this.prev()}>
+                  <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
                     上一步
                   </Button>
                 )
@@ -345,12 +402,48 @@ export default class OrderAddView extends PureComponent {
               {
                 this.state.current < steps.length - 1
                 &&
-                <Button style={{marginLeft: 8}} type="primary" onClick={() => this.next()}>下一步</Button>
+                (
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="primary"
+                  onClick={() => {
+                          if (this.state.selectContractList === null
+                            || this.state.selectContractList.length === 0) {
+                            message.error('请选择一个合同');
+                          } else if (this.state.selectContractList.length > 1) {
+                            message.error('只支持选择一个合同');
+                          } else {
+                            this.next();
+                          }
+                        }
+                        }
+                >下一步
+                </Button>
+)
               }
               {
                 this.state.current === steps.length - 1
                 &&
-                <Button style={{marginLeft: 8}} type="primary" onClick={() => message.success('Processing complete!')}>完成</Button>
+                (
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="primary"
+                  onClick={() => {
+                            if (this.state.selectSpeList.length === 0) {
+                              message.error('请选择规格');
+                            } else {
+                              this.setState({
+                                preOrderList: this.createOrder(),
+                                current: 0,
+                                speContractSelectModalVisible: false,
+                              });
+                            }
+                          }
+                        }
+                >
+                  完成
+                </Button>
+)
               }
             </div>
           </Modal>
@@ -358,7 +451,6 @@ export default class OrderAddView extends PureComponent {
 
         </div>
       </Card>
-    )
-      ;
+    );
   }
 }

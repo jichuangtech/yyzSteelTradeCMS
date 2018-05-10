@@ -24,6 +24,7 @@ const InputCell = ({defaultValue}) => (
     <Input defaultValue={defaultValue} style={{width: '70%'}}/>
   </div>
 );
+const columnWidthPercent = '16%';
 
 export default class OrderAddTable extends React.Component {
   constructor(props) {
@@ -32,7 +33,7 @@ export default class OrderAddTable extends React.Component {
       modalTitle: "默认的初始值1",
       modalContentView: <SpecificationSelectView2/>,
       modalStockView: <StockSelectView2/>,
-      modalVisble: false,
+      modalVisible: false,
       data: data,
     };
 
@@ -40,36 +41,56 @@ export default class OrderAddTable extends React.Component {
       title: '行号',
       dataIndex: 'key',
       width: '8%',
-      render: (text, record) => this.renderAColumns(parseInt(text) + 1, record, 'name'),
+      render: (text, record) => this.renderAColumns(text, record, 'name'),
     }, {
       title: '商品',
-      dataIndex: 'name',
-      width: '22%',
+      dataIndex: 'goodsName',
+      width: columnWidthPercent,
       render: (text, record) => this.renderAColumns(text, record, 'name'),
     }, {
       title: '规格',
-      dataIndex: 'age',
-      width: '22%',
+      dataIndex: 'specStr',
+      width: columnWidthPercent,
       render: (text, record) => this.renderAColumns(text, record, 'age', {
         modalTitle: "请选择规格",
         modalContentView: <StockSelectView2 />,
       }),
     }, {
       title: '数量',
-      dataIndex: 'address',
-      width: '22%',
+      dataIndex: 'number',
+      width: columnWidthPercent,
       render: (text, record) => this.renderInputColumns("0"),
     }, {
       title: '合同',
-      dataIndex: 'age',
-      width: '22%',
+      dataIndex: 'contractName',
+      width: columnWidthPercent,
       render: (text, record) => this.renderAColumns(text, record, 'address', {
         modalTitle: "请选择合同",
         modalContentView: <StockSelectView2 />,
       }),
+    }, {
+      title: '操作',
+      render: (text, record) => (
+        <Popconfirm
+          title="确定删除该条货物?"
+          onConfirm={() => this.props.onOrderGoodsDelete(record.key, record)}
+        >
+          <a>删除</a>
+        </Popconfirm>
+      ),
     }];
 
     this.cacheData = data.map(item => ({...item}));
+  }
+
+  deleteOrderGoods() {
+
+  }
+
+  componentWillMount() {
+    this.setState({
+      data: this.props.preOrderList,
+    });
   }
 
   renderAColumns(text, record, column, modalInfo) {
@@ -85,7 +106,7 @@ export default class OrderAddTable extends React.Component {
 
   showModal(modalInfo) {
     this.setState({
-      modalVisble: true,
+      modalVisible: true,
       modalTitle: modalInfo.modalTitle,
       modalContentView: modalInfo.modalContentView,
     });
@@ -140,13 +161,13 @@ export default class OrderAddTable extends React.Component {
   handleOk = (e) => {
     console.log(e);
     this.setState({
-      modalVisble: false,
+      modalVisible: false,
     });
   }
   handleCancel = (e) => {
     console.log(e);
     this.setState({
-      modalVisble: false,
+      modalVisible: false,
     });
   }
 
@@ -154,14 +175,14 @@ export default class OrderAddTable extends React.Component {
     const that = this;
     return (
       <div>
-        <Table bordered dataSource={this.state.data} columns={this.columns}
+        <Table bordered dataSource={this.props.preOrderList} columns={this.columns}
                rowSelection={[]}
         />
         <Modal
           title={that.state.modalTitle}
           onOk={that.handleOk}
           onCancel={that.handleCancel}
-          visible={that.state.modalVisble}>
+          visible={that.state.modalVisible}>
           {
             that.state.modalStockView
           }

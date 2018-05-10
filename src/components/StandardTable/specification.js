@@ -13,7 +13,7 @@ class StandardTable extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     // clean state
-    if (nextProps.selectedRows.length === 0) {
+    if (nextProps.selectSpeList.length === 0) {
       this.setState({
         selectedRowKeys: [],
         totalCallNo: 0,
@@ -26,11 +26,12 @@ class StandardTable extends PureComponent {
       return sum + parseFloat(val.callNo, 10);
     }, 0);
 
+    this.setState({ selectedRowKeys, totalCallNo });
+
     if (this.props.onSelectRow) {
       this.props.onSelectRow(selectedRows);
     }
 
-    this.setState({ selectedRowKeys, totalCallNo });
   }
 
   handleTableChange = (pagination, filters, sorter) => {

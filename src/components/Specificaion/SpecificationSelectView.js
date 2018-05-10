@@ -5,15 +5,15 @@ import SpecStandardTable from '../../components/StandardTable/specification';
 class SpecificationSelectView extends Component {
 
   render() {
-    const { loading, list, selectedRows, factoryTitle } = this.props;
+    const { loading, list, selectedRows, factoryTitle, onSelectRow, selectSpeList } = this.props;
     return (
       <div>
-        <span>{factoryTitle}</span>
         <SpecStandardTable
+          selectSpeList={selectSpeList}
           selectedRows={selectedRows}
           loading={loading}
           data={list}
-          onSelectRow={() => {}}
+          onSelectRow={onSelectRow}
           onChange={() => {}}
           onDelClick={() => {}}
         />

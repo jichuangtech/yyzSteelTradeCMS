@@ -7,11 +7,13 @@ import SpecificationSelectView from '../../components/Specificaion/Specification
 class SpecificationSelectView2 extends Component {
 
   render() {
-    const { orderSelectInfo:  { specificationList, factoryName, loading } } = this.props;
+    const { orderSelectInfo:  { specificationList, factoryName, loading }, onSelectRow, selectSpeList } = this.props;
     return (
       <div>
         <SpecificationSelectView
+          selectSpeList={selectSpeList}
           factoryTitle={factoryName}
+          onSelectRow={onSelectRow}
           selectedRows={[]}
           loading={loading}
           list={specificationList}

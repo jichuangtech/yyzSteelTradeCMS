@@ -12,8 +12,8 @@ class StandardTable extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    // clean state
-    if (nextProps.selectedRows.length === 0) {
+    //clean state
+    if (nextProps.selectContractList.length === 0) {
       this.setState({
         selectedRowKeys: [],
         totalCallNo: 0,
@@ -26,11 +26,11 @@ class StandardTable extends PureComponent {
       return sum + parseFloat(val.callNo, 10);
     }, 0);
 
+    this.setState({ selectedRowKeys, totalCallNo });
+
     if (this.props.onSelectRow) {
       this.props.onSelectRow(selectedRows);
     }
-
-    this.setState({ selectedRowKeys, totalCallNo });
   }
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -96,16 +96,18 @@ class StandardTable extends PureComponent {
     };
 
     const rowSelection = {
+      type: 'radio',
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
       getCheckboxProps: record => ({
-        disabled: record.disabled,
+        // disabled: record.disabled,
+        disabled: record.rest === 0,
       }),
     };
 
     return (
       <div className={styles.standardTable}>
-        <div className={styles.tableAlert}>
+        <div className={styles.tableAlert} style={{ display: 'none' }}>
           <Alert
             message={(
               <div>
@@ -119,6 +121,7 @@ class StandardTable extends PureComponent {
           />
         </div>
         <Table
+
           bordered
           loading={loading}
           rowKey={record => record.id}
