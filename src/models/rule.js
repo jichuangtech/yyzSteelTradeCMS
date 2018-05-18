@@ -39,7 +39,7 @@ export default {
   reducers: {
     /**
      * @param state   是目前的状态
-     * @param action  是本次要处理的action
+     * @param action  是本次要处理的action，其中 action中的 key字段是必须的，其他字段可选
      * {  type: xxx, payload: yyyy }
      * @returns {{data}}
      */

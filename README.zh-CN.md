@@ -37,6 +37,7 @@ Response.redirect()
 这样可以保证数据都从一个地方读取，并且修改这个数据的入口也只有dva，可以解决初始值的问题；
 （1）数据集中还可以包含 该业务界面中 提供给用户查看的UI数据列表的存储
 
+五：effects: {} 中的 select( state => {} ),中的 state是项目的全部状态，想要取得某个model中数据，需要 state.namespace
 # Ant Design Pro
 
 [![](https://img.shields.io/travis/ant-design/ant-design-pro.svg?style=flat-square)](https://travis-ci.org/ant-design/ant-design-pro) [![Build status](https://ci.appveyor.com/api/projects/status/67fxu2by3ibvqtat/branch/master?svg=true)](https://ci.appveyor.com/project/afc163/ant-design-pro/branch/master)  [![Gitter](https://badges.gitter.im/ant-design/ant-design-pro.svg)](https://gitter.im/ant-design/ant-design-pro?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)

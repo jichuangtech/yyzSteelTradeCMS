@@ -215,6 +215,28 @@ export default class OrderAddView extends PureComponent {
     this.setState({ prevOrderList });
   }
 
+  onOrderGoodsNumberChange(number, index) {
+    let order = this.state.preOrderList[index];
+    const prevNumber = order.number;
+    const convert = parseInt(number);
+    const newNumber = number.length === 0 ? 0 : convert == number ? number : order.number;
+
+    let newOrderList = this.state.preOrderList;
+    newOrderList[index].number = newNumber;
+
+    console.log(" onOrderGoodsNumberChange index: " + index
+      + ", prevNumber: " + prevNumber
+      + ", number: " + number
+      + ", convert: " + parseInt(convert)
+      + ", newNumber: " + newNumber
+      + ", order: " + JSON.stringify(order)
+      + ", newOrderList: " + JSON.stringify(newOrderList));
+
+    this.setState({
+      preOrderList: newOrderList.slice(0)
+    });
+  }
+
   handleOk = (e) => {
     console.log(e);
     this.setState({
@@ -249,6 +271,13 @@ export default class OrderAddView extends PureComponent {
     return orders;
   }
 
+  testCountFun() {
+      const { dispatch} = this.props;
+      dispatch({
+        type: 'orderSelectInfo/refreshTestCountAsync',
+      });
+  }
+
   render() {
     const props = {
       beforeUpload: (file) => {
@@ -267,7 +296,7 @@ export default class OrderAddView extends PureComponent {
       },
       fileList: this.state.image,
     };
-    const { submitting, factory: { list, carList }, orderSelectInfo: { factoryName } } = this.props;
+    const { submitting, factory: { list, carList }, orderSelectInfo: { factoryName, testCount } } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -306,6 +335,7 @@ export default class OrderAddView extends PureComponent {
               />
             </div>
 
+            <Button onClick={ () => this.testCountFun() }>我是测试按钮 {testCount}</Button>
             <div className={orderAddStyle.orderTitle}>
               产品销售订货单
             </div>
@@ -352,6 +382,7 @@ export default class OrderAddView extends PureComponent {
           </div>
           <OrderAddTable
             preOrderList={preOrderList}
+            onOrderGoodsNumberChange={(number, index) => this.onOrderGoodsNumberChange(number, index)}
             onOrderGoodsDelete={(index, orderGoods) => this.onOrderGoodsDelete(index, orderGoods)}
           />
 

@@ -13,7 +13,8 @@ class StandardTable extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     //clean state
-    if (nextProps.selectContractList.length === 0) {
+    const list = nextProps.selectContractList;
+    if (list !== undefined && list.length === 0) {
       this.setState({
         selectedRowKeys: [],
         totalCallNo: 0,

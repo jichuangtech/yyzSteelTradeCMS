@@ -20,9 +20,18 @@ export default {
     carList: [],
     customerId: -1,
     customerLis: [],
+    testCount: 2,
   },
 
   effects: {
+    *refreshTestCountAsync({ payload }, { call, put, select }) {
+       const count = yield select( state => state.orderSelectInfo.testCount);
+       yield put({
+         type: 'refreshTestCount',
+         testCount: count + 1,
+       });
+    },
+
     *refreshSelectInfo({payload}, {call, put}) {
       const response = yield call(queryFactoryById, payload.factoryId);
       // alert("refreshSelectInfo response: " + JSON.stringify(response));
@@ -50,7 +59,24 @@ export default {
 
   },
 
+  subscriptions: {
+    setup({ history, dispatch }) {
+      // 监听 history 变化，当进入 `/` 时触发 `load` action
+      return history.listen(({ pathname }) => {
+
+        message.info(" pathname: " + pathname);
+      });
+    },
+  },
+
   reducers: {
+    refreshTestCount(state, action) {
+      return {
+        ...state,
+        testCount: action.testCount,
+      };
+    },
+
     save(state, action) {
       return {
         ...state,

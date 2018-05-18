@@ -14,17 +14,21 @@ for (let i = 0; i < 2; i++) {
   });
 }
 
-const ACell = ({editable, value, onChange, onClick}) => (
+const ACell = ({ editable, value, onChange, onClick} ) => (
   <div>
     {value}
   </div>
 );
-const InputCell = ({defaultValue}) => (
+const InputCell = ({ value, defaultValue, onChange }) => (
   <div>
-    <Input defaultValue={defaultValue} style={{width: '70%'}}/>
+    <Input value={value}
+           onChange={(event) => onChange(event.target.value)}
+           size="small"
+           defaultValue={defaultValue}
+           style={{ width: '70%' }} />
   </div>
 );
-const columnWidthPercent = '16%';
+const columnWidthPercent = '18%';
 
 export default class OrderAddTable extends React.Component {
   constructor(props) {
@@ -41,7 +45,7 @@ export default class OrderAddTable extends React.Component {
       title: '行号',
       dataIndex: 'key',
       width: '8%',
-      render: (text, record) => this.renderAColumns(text, record, 'name'),
+      render: (text, record, index) => this.renderAColumns(index + 1, record, 'name'),
     }, {
       title: '商品',
       dataIndex: 'goodsName',
@@ -53,23 +57,24 @@ export default class OrderAddTable extends React.Component {
       width: columnWidthPercent,
       render: (text, record) => this.renderAColumns(text, record, 'age', {
         modalTitle: "请选择规格",
-        modalContentView: <StockSelectView2 />,
+        modalContentView: <StockSelectView2/>,
       }),
     }, {
       title: '数量',
       dataIndex: 'number',
       width: columnWidthPercent,
-      render: (text, record) => this.renderInputColumns("0"),
+      render: (text, record, index) => this.renderInputColumns(record.number, 0, props.onOrderGoodsNumberChange, index),
     }, {
       title: '合同',
       dataIndex: 'contractName',
       width: columnWidthPercent,
       render: (text, record) => this.renderAColumns(text, record, 'address', {
         modalTitle: "请选择合同",
-        modalContentView: <StockSelectView2 />,
+        modalContentView: <StockSelectView2/>,
       }),
     }, {
       title: '操作',
+      width: '7.5%',
       render: (text, record) => (
         <Popconfirm
           title="确定删除该条货物?"
@@ -112,9 +117,11 @@ export default class OrderAddTable extends React.Component {
     });
   }
 
-  renderInputColumns(defaultValue) {
+  renderInputColumns(value, defaultValue, onChange, index) {
     return (
       <InputCell
+        value={value}
+        onChange={(currValue) => onChange(currValue, index)}
         defaultValue={defaultValue}
       />
     );
@@ -173,6 +180,7 @@ export default class OrderAddTable extends React.Component {
 
   render() {
     const that = this;
+    // alert(" orderAddTable order List: " + JSON.stringify(this.props.preOrderList));
     return (
       <div>
         <Table bordered dataSource={this.props.preOrderList} columns={this.columns}
