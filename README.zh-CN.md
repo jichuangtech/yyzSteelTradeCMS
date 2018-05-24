@@ -56,13 +56,22 @@ Response.redirect()
 1）ES6 模板字符串： className={`title ${index === this.state.active ? 'active' : ''}`}
 2）classnames库 ：
  
-  //（1）本项目中，在引用样式的时候，需要带对象类名，因此需要用 [] 将类名和属性名包围起来 
-  const btnClassNames = classNames({
-        [styles.btn]: true,
-        [styles.btnShort]: true,
-        [styles.btnLong]: true,
-  });
-  //（2）   
+  //（1）本项目中，在引用样式的时候，需要带对象类名，要将类名绑定到 classnames中
+      import classNames from 'classnames/bind';
+      const cx = classNames.bind(styles);
+      const btnClass = cx({
+        btn: true,
+        'btn-pressed': this.state.isPressed,
+        'btn-over': !this.state.isPressed && this.state.isHovered
+      });
+  //（2）本项目中，在引用样式的时候，需要带对象类名，因此需要用 [] 将类名和属性名包围起来
+    import classNames from 'classnames'; 
+    const btnClassNames = classNames({
+          [styles.btn]: true,
+          [styles.btnShort]: true,
+          [styles.btnLong]: true,
+    });
+  //（3）这种不能直接使用，除非 .btn{}样式是定义在 render() {}相同的 .js文件中
   const btnClass = classNames({
         btn: true,
         'btn-pressed': this.state.isPressed,
